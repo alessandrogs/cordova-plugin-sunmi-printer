@@ -1,0 +1,31 @@
+{
+  "name": "cordova-plugin-sunmi-printer",
+  "version": "0.0.1",
+  "description": "Cordova Sunmi Printer Plugin",
+  "cordova": {
+    "id": "cordova-plugin-sunmi-printer",
+    "platforms": [
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alessandrogs/cordova-plugin-sunmi-printer"
+  },
+  "keywords": [
+    "cordova",
+    "ecosystem:cordova",
+    "cordova-android",
+    "sunmi",
+    "printer",
+    "bluetooth"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.4.0"
+    }
+  ],
+  "author": "Apache Software Foundation",
+  "license": "Apache 2.0"
+}

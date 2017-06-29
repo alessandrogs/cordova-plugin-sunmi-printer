@@ -29,7 +29,7 @@
             <uses-permission android:name="android.permission.READ_PHONE_STATE" />
         </config-file>
         <source-file src="src/android/libs/sunmiprinter_v1.8.3.jar" target-dir="libs"  />
-        <source-file src="src/android/libs/zxing_3.2.0.jar" target-dir="libs"  />
+<!--        <source-file src="src/android/libs/zxing_3.2.0.jar" target-dir="libs"  />-->
         <!--        <source-file src="src/android/libs/core-3.3.0.jar" target-dir="libs"  />
         <source-file src="src/android/aidl/com/sunmi/trans/TransBean.aidl" target-dir="br/com/ifabrica/sunmi/sunmiprinter"  />
         <source-file src="src/android/aidl/com/woyou/aidlservice/jiuiv5/ICallback.aidl" target-dir="br/com/ifabrica/sunmi/sunmiprinter" />
@@ -38,7 +38,7 @@
         <source-file src="src/android/java/SunmiPrinter.java" target-dir="br/com/ifabrica/sunmi/sunmiprinter" />
         <source-file src="src/android/java/ThreadPoolManager.java" target-dir="br/com/ifabrica/sunmi/sunmiprinter" />
 
-        <source-file src="src/android/res/values-pt/strings.xml" target-dir="res/values-pt"/>
+        <!--<source-file src="src/android/res/values-pt/strings.xml" target-dir="res/values-pt"/>-->
 
         <config-file target="res/values/strings.xml" parent="/resources">
             <string name="connecting">Connecting...</string>

@@ -19,7 +19,7 @@
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="SunmiPrinter">
-                <param name="android-package" value="br.com.ifabrica.sunmi.sunmiPrinter.SunmiPrinter"/>
+                <param name="android-package" value="br.com.ifabrica.sunmi.sunmiprinter.SunmiPrinter"/>
             </feature>
         </config-file>
 
@@ -35,8 +35,8 @@
         <source-file src="src/android/aidl/com/woyou/aidlservice/jiuiv5/ICallback.aidl" target-dir="br/com/ifabrica/sunmi/sunmiprinter" />
         <source-file src="src/android/aidl/com/woyou/aidlservice/jiuiv5/IWoyouService.aidl" target-dir="br/com/ifabrica/sunmi/sunmiprinter"  />
         <source-file src="src/android/java/com/sunmi/printerhelper/utils/AidlUtil.java" target-dir="br/com/ifabrica/sunmi/sunmiprinter" />-->
-        <source-file src="src/android/java/SunmiPrinter.java" target-dir="br/com/ifabrica/sunmi/sunmiprinter" />
-        <source-file src="src/android/java/ThreadPoolManager.java" target-dir="br/com/ifabrica/sunmi/sunmiprinter" />
+        <source-file src="src/android/java/SunmiPrinter.java" target-dir="src/br/com/ifabrica/sunmi/sunmiprinter" />
+        <source-file src="src/android/java/ThreadPoolManager.java" target-dir="src/br/com/ifabrica/sunmi/sunmiprinter" />
 
         <!--<source-file src="src/android/res/values-pt/strings.xml" target-dir="res/values-pt"/>-->
 

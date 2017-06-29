@@ -2,13 +2,17 @@ package br.com.ifabrica.sunmi.sunmiprinter;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaWebView;
+
+import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.graphics.Bitmap;
-
+//import android.graphics.Bitmap;
 import com.sunmi.controller.ICallback;
 import com.sunmi.impl.V1Printer;
 
@@ -16,24 +20,42 @@ public class SunmiPrinter extends CordovaPlugin {
 
     private V1Printer printer;
     private ICallback callback;
-    private Bitmap mBitmap;
+//    private Bitmap mBitmap;
+    private Context context;
+    private static String TAG = "SunmiPrinter";
 
     private enum Option {
         printText
     }
 
-//    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-//        super.initialize(cordova, webView);
-//        printer = new DatecsSDKWrapper(cordova);
-//        printer.setWebView(webView);
-//    }
-    printer  = new V1Printer(this);
+    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+        super.initialize(cordova, webView);
+        context = cordova.getActivity().getApplicationContext();
+        printer = new V1Printer(context);
 
-    callback  = new ICallback();
+        callback = new ICallback() {
+
+            @Override
+            public void onRunResult(boolean isSuccess) {
+                Log.i(TAG, "onRunResult:" + isSuccess);
+            }
+
+            @Override
+            public void onReturnString(String result) {
+                Log.i(TAG, "onReturnString:" + result);
+            }
+
+            @Override
+            public void onRaiseException(int code, String msg) {
+                Log.i(TAG, "onRaiseException:" + code + ":" + msg);
+            }
+
+        };
+    }
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        printer.setCallback(callbackContext);
+        printer.setCallback(callback);
 
         Option option = null;
         try {
@@ -43,7 +65,7 @@ public class SunmiPrinter extends CordovaPlugin {
         }
         switch (option) {
             case printText:
-                String text = args.getString(0);
+                final String text = args.getString(0);
                 ThreadPoolManager.getInstance().executeTask(new Runnable() {
 
                     @Override
@@ -67,7 +89,7 @@ public class SunmiPrinter extends CordovaPlugin {
                         printer.printText("Válido até          27/06/2017 17:29\n");
                         printer.printText("--------------------------------\n");
                         printer.printText("Obrigado\n");
-                        printer.printText(text+"\n");
+                        printer.printText(text + "\n");
                         printer.setFontSize(32);
                         printer.printText("http://www.apcap.com.br\n");
                         printer.printOriginalText("http://www.ideams.com.br\n");
@@ -76,9 +98,6 @@ public class SunmiPrinter extends CordovaPlugin {
                         printer.printOriginalText("Volte Sempre\n");
                         printer.lineWrap(6);
 
-                        printer.commitTransaction();
-
-                        //重复打印
                         printer.commitTransaction();
                     }
                 });

@@ -12,7 +12,7 @@ var printer = {
         }
         return false;
     },
-    printText: function (text, charset, onSuccess, onError) {
+    printText: function (text, onSuccess, onError) {
         exec(onSuccess, onError, 'SunmiPrinter', 'printText', [text]);
     }
 };

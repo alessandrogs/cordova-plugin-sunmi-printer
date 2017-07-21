@@ -12,8 +12,20 @@ var printer = {
         }
         return false;
     },
-    printText: function (text, onSuccess, onError) {
-        exec(onSuccess, onError, 'SunmiPrinter', 'printText', [text]);
+    printText: function (arr, onSuccess, onError) {
+        exec(onSuccess, onError, 'SunmiPrinter', 'printText', arr);
+    },
+    printQRCode: function (arr, onSuccess, onError) {
+        exec(onSuccess, onError, 'SunmiPrinter', 'printQRCode', arr);
+    },
+    printBarCode: function (arr, onSuccess, onError) {
+        exec(onSuccess, onError, 'SunmiPrinter', 'printBarCode', arr);
+    },
+    printImage: function (arr, onSuccess, onError) {
+        exec(onSuccess, onError, 'SunmiPrinter', 'printImage', arr);
+    },
+    printerTest: function (arr, onSuccess, onError) {
+        exec(onSuccess, onError, 'SunmiPrinter', 'printerTest', arr);
     }
 };
 module.exports = printer;

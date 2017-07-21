@@ -7,12 +7,15 @@ import org.apache.cordova.CordovaWebView;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.Base64;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-//import android.graphics.Bitmap;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import com.google.zxing.BarcodeFormat;
 import com.sunmi.controller.ICallback;
 import com.sunmi.impl.V1Printer;
 
@@ -25,7 +28,11 @@ public class SunmiPrinter extends CordovaPlugin {
     private static String TAG = "SunmiPrinter";
 
     private enum Option {
-        printText
+        printText,
+        printQRCode,
+        printBarCode,
+        printImage,
+        printerTest
     }
 
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -49,59 +56,169 @@ public class SunmiPrinter extends CordovaPlugin {
             public void onRaiseException(int code, String msg) {
                 Log.i(TAG, "onRaiseException:" + code + ":" + msg);
             }
-
         };
+        printer.setCallback(callback);
     }
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        printer.setCallback(callback);
-
         Option option = null;
         try {
             option = Option.valueOf(action);
         } catch (Exception e) {
             return false;
         }
+        final JSONArray arr = args;
         switch (option) {
             case printText:
-                final String text = args.getString(0);
                 ThreadPoolManager.getInstance().executeTask(new Runnable() {
 
                     @Override
                     public void run() {
 
-                        printer.beginTransaction();
+                        String text;
+                        int fontSize;
+                        int align;
+                        int LF;
 
+                        printer.beginTransaction();
                         printer.printerInit();
 
-                        printer.setFontSize(24);
-                        printer.printText("APCAP\n");
-                        printer.printText("CAD 239843298423\n");
-                        printer.printText("===============================\n");
-                        printer.printText("Transação 03456123243343\n");
-                        printer.printText("CARRO COS-0086\n");
-                        printer.printText("27/06/2017 14:45\n");
-                        printer.printText("------------------------------- \n");
-                        printer.printText("2016040621001004150224503623\n\n");
-                        printer.printText("cetsp.com.br\n");
-                        printer.printText("--------------------------------\n");
-                        printer.printText("Válido até          27/06/2017 17:29\n");
-                        printer.printText("--------------------------------\n");
-                        printer.printText("Obrigado\n");
-                        printer.printText(text + "\n");
-                        printer.setFontSize(32);
-                        printer.printText("http://www.apcap.com.br\n");
-                        printer.printOriginalText("http://www.ideams.com.br\n");
-                        printer.setFontSize(24);
-                        printer.printText("contato@apcap.com.br\n");
-                        printer.printOriginalText("Volte Sempre\n");
-                        printer.lineWrap(6);
+                        try {
+//                            JSONArray jsonArray = new JSONArray(arr);
+//                        JSONArray jsonPersonData = jsonArray.getJSONArray(1);
+                            for (int i = 0; i < arr.length(); i++) {
+                                JSONObject item = arr.getJSONObject(i);
+                                text = item.getString("text");
+                                fontSize = item.getInt("fontSize");
+                                align = item.getInt("align");
+                                LF = item.getInt("LF");
+                                printer.setAlignment(align);
+                                printer.setFontSize(fontSize);
+                                printer.printText(text);
+                                printer.lineWrap(LF);
+                            }
+                        } catch (JSONException e) {
+                        }
 
                         printer.commitTransaction();
                     }
                 });
+                break;
 
+            case printQRCode:
+                ThreadPoolManager.getInstance().executeTask(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        String text;
+                        int width;
+                        int height;
+                        int align;
+                        int LF;
+
+                        printer.beginTransaction();
+                        printer.printerInit();
+
+                        try {
+                            for (int i = 0; i < arr.length(); i++) {
+                                JSONObject item = arr.getJSONObject(i);
+                                text = item.getString("text");
+                                width = item.getInt("width");
+                                align = item.getInt("align");
+                                LF = item.getInt("LF");
+
+                                printer.setAlignment(align);
+//                                printer.printBarCode(text, BarcodeFormat.QR_CODE, width, height);
+                                printer.printQRCode(text, width);
+//                                printer.printDoubleQRCode("http://www.sunmi.com", "http://www.baidu.com", 180);
+                                printer.lineWrap(LF);
+                            }
+                        } catch (JSONException e) {
+                        }
+                        printer.commitTransaction();
+                    }
+                });
+                break;
+
+            case printBarCode:
+                ThreadPoolManager.getInstance().executeTask(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        String text;
+                        int width;
+                        int height;
+                        int align;
+                        int LF;
+
+                        printer.beginTransaction();
+                        printer.printerInit();
+
+                        try {
+                            for (int i = 0; i < arr.length(); i++) {
+                                JSONObject item = arr.getJSONObject(i);
+                                text = item.getString("text");
+                                width = item.getInt("width");
+                                height = item.getInt("height");
+                                align = item.getInt("align");
+                                LF = item.getInt("LF");
+
+                                printer.setAlignment(align);
+                                printer.printBarCode(text, BarcodeFormat.EAN_13, width, height);
+                                printer.lineWrap(LF);
+                            }
+                        } catch (JSONException e) {
+                        }
+                        printer.commitTransaction();
+                    }
+                });
+                break;
+
+            case printImage:
+                ThreadPoolManager.getInstance().executeTask(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        Bitmap image;
+                        int align;
+                        int LF;
+
+                        printer.beginTransaction();
+                        printer.printerInit();
+
+                        try {
+                            for (int i = 0; i < arr.length(); i++) {
+                                JSONObject item = arr.getJSONObject(i);
+                                byte[] decodedString = Base64.decode(item.getString("image"), Base64.DEFAULT);
+                                image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                align = item.getInt("align");
+                                LF = item.getInt("LF");
+
+                                printer.setAlignment(align);
+                                printer.printBitmap(image);
+                                printer.lineWrap(LF);
+                            }
+                        } catch (JSONException e) {
+                        }
+                        printer.commitTransaction();
+                    }
+                });
+                break;
+
+            case printerTest:
+                ThreadPoolManager.getInstance().executeTask(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        printer.beginTransaction();
+                        printer.printerSelfChecking();
+                        printer.commitTransaction();
+                    }
+                });
                 break;
         }
         return true;
